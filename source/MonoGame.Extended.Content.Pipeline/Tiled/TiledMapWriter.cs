@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
@@ -124,6 +125,12 @@ namespace MonoGame.Extended.Content.Pipeline.Tiled
         private void WriteImageLayer(ContentWriter writer, TiledMapImageLayerContent imageLayer)
         {
             var externalReference = _contentItem.GetExternalReference<Texture2DContent>(imageLayer.Image.Source);
+            
+            if (externalReference == null)
+            {
+                ContentLogger.Logger.Log(LogLevel.Error, $"Failed to find external reference for ImageLayer '{imageLayer.Name}' with source '{imageLayer.Image.Source}'. Image will be null at runtime.");
+            }
+            
             writer.WriteExternalReference(externalReference);
             writer.Write(new Vector2(imageLayer.X, imageLayer.Y));
         }

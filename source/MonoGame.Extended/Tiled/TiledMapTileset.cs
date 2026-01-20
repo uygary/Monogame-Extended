@@ -64,7 +64,7 @@ namespace MonoGame.Extended.Tiled
             return Texture is not null
                 ? TiledMapHelper.GetTileSourceRectangle(localTileIdentifier, TileWidth, TileHeight, Columns, Margin,
                     Spacing)
-                : Tiles.FirstOrDefault(x => x.LocalTileIdentifier == localTileIdentifier).Texture.Bounds;
+                : Tiles.First(x => x.LocalTileIdentifier == localTileIdentifier).Texture.Bounds;
         }
     }
 }

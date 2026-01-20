@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 // See LICENSE file in the project root for full license information.
 
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
@@ -49,6 +50,10 @@ namespace MonoGame.Extended.Content.Pipeline.Tiled
             if (string.IsNullOrWhiteSpace(source))
                 return;
 
+            var sanitizedSource = Path.GetFullPath(source);
+            //var relativeSource = Path.GetRelativePath(Directory.GetCurrentDirectory(), sanitizedSource);
+            var relativeSource = Path.GetRelativePath(context.ProjectDirectory, sanitizedSource);
+
             var textureImporter = new TextureImporter();
             var textureProcessor = new TextureProcessor();
 
@@ -74,8 +79,8 @@ namespace MonoGame.Extended.Content.Pipeline.Tiled
                     textureProcessor.TextureFormat = (TextureProcessorOutputFormat)textureFormat;
             }
 
-            var sourceAsset = new ExternalReference<TextureContent>(source);
-            var externalReference = context.BuildAsset<TextureContent, TextureContent>(sourceAsset, textureImporter, textureProcessor, assetName: null);
+            var sourceAsset = new ExternalReference<Texture2DContent>(relativeSource);
+            var externalReference = context.BuildAsset<Texture2DContent, Texture2DContent>(sourceAsset, textureImporter, textureProcessor, assetName: null);
 
             repository.StoreExternalReference(source, externalReference);
         }
@@ -94,7 +99,11 @@ namespace MonoGame.Extended.Content.Pipeline.Tiled
             var tilesetImporter = new TiledMapTilesetImporter();
             var tilesetProcessor = new TiledMapTilesetProcessor();
 
-            var sourceAsset = new ExternalReference<TiledMapTilesetContentItem>(source);
+            var sanitizedSource = Path.GetFullPath(source);
+            //var relativeSource = Path.GetRelativePath(Directory.GetCurrentDirectory(), sanitizedSource);
+            var relativeSource = Path.GetRelativePath(context.ProjectDirectory, sanitizedSource);
+
+            var sourceAsset = new ExternalReference<TiledMapTilesetContentItem>(relativeSource);
             var externalReference = context.BuildAsset<TiledMapTilesetContentItem, TiledMapTilesetContentItem>(sourceAsset, tilesetImporter, tilesetProcessor, assetName: null);
 
             repository.StoreExternalReference(source, externalReference);

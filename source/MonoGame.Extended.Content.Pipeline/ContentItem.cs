@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework.Content.Pipeline;
 
 namespace MonoGame.Extended.Content.Pipeline
@@ -71,16 +72,18 @@ namespace MonoGame.Extended.Content.Pipeline
         /// <param name="reference">The external reference to store.</param>
         public void StoreExternalReference<TInput>(string source, ExternalReference<TInput> reference)
         {
-            if (source is not null && reference is not null)
+            var sanitizedSource = source != null ? Path.GetFullPath(source) : null;
+            if (sanitizedSource is not null && reference is not null)
                 _externalReferences[source] = reference;
         }
 
         [Obsolete]
         public void BuildExternalReference<TInput>(ContentProcessorContext context, string source, OpaqueDataDictionary parameters = null)
         {
-            var sourceAsset = new ExternalReference<TInput>(source);
+            var sanitizedSource = source != null ? Path.GetFullPath(source) : null;
+            var sourceAsset = new ExternalReference<TInput>(sanitizedSource);
             var externalReference = context.BuildAsset<TInput, TInput>(sourceAsset, "", parameters, "", "");
-            _externalReferences.Add(source, externalReference);
+            _externalReferences.Add(sanitizedSource, externalReference);
         }
     }
 #else
